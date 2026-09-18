@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Amigo</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 34 34'%3E%3Ccircle cx='17' cy='17' r='17' fill='%230866ff'/%3E%3Ccircle cx='12' cy='15' r='3.4' fill='white'/%3E%3Ccircle cx='22' cy='15' r='3.4' fill='white'/%3E%3Cpath d='M9 21c2 3.4 5 5 8 5s6-1.6 8-5' stroke='white' stroke-width='3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div class="auth" id="authScreen" hidden>
+  <div class="split">
+    <section class="left">
+      <div class="brand-mark" aria-label="Amigo logo">
+        <svg width="34" height="34" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+          <circle cx="12" cy="15" r="3.4" fill="#fff"/><circle cx="22" cy="15" r="3.4" fill="#fff"/>
+          <path d="M9 21c2 3.4 5 5 8 5s6-1.6 8-5" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div class="collage">
+        <div class="collage-inner">
+          <div class="tile phone"><div class="pill">🕓 16:45</div></div>
+          <div class="tile plant"></div>
+          <div class="tile feed"><span class="feed-face">🏞️</span></div>
+          <div class="tag shop">🛍️</div><div class="tag save">🔖</div>
+          <div class="react laugh">😄</div><div class="react heart">❤️</div>
+          <div class="avatar">🧑🏽‍🎤</div>
+        </div>
+      </div>
+      <h1 class="headline">Explore<br>the<br>things<br><span class="accent">you love.</span></h1>
+    </section>
+
+    <section class="right">
+      <!-- LOGIN -->
+      <div class="form-wrap" id="loginView">
+        <h2 class="form-title">Log in to Amigo</h2>
+        <form class="form" id="loginForm" autocomplete="off">
+          <input class="field" id="loginEmail" type="text" placeholder="Email address or mobile number" required>
+          <input class="field" id="loginPass" type="password" placeholder="Password" required>
+          <button class="btn btn-login" type="submit">Log in</button>
+          <span class="forgot" id="forgot">Forgotten password?</span>
+          <button class="btn btn-create" type="button" id="toSignup">Create new account</button>
+        </form>
+        <p class="msg" id="loginMsg"></p>
+        <div class="brand-foot"><span class="dot"></span> Amigo</div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="form-wrap" id="signupView" hidden>
+        <h2 class="form-title">Create your account</h2>
+        <p class="form-sub">It's quick and easy.</p>
+        <form class="form" id="signupForm" autocomplete="off">
+          <input class="field" id="suName" type="text" placeholder="Full name" required>
+          <input class="field" id="suEmail" type="email" placeholder="Email address" required>
+          <input class="field" id="suPass" type="password" placeholder="New password (min 6 chars)" required>
+          <button class="btn btn-login" type="submit">Sign up</button>
+        </form>
+        <p class="msg" id="signupMsg"></p>
+        <p class="switch">Already have an account? <a id="toLogin">Log in</a></p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="langs">
+      <span class="active">English (UK)</span><span>العربية</span><span>Français (France)</span>
+      <span>Italiano</span><span>Deutsch</span><span>Русский</span><span>Español</span><span>More languages</span>
+    </div>
+    <div class="copyright">Amigo © 2026 · Demo project · Not affiliated with any real service</div>
+  </footer>
+</div>
+
+<!-- ============ HOME SCREEN ============ -->
+<div class="app" id="appScreen" hidden>
+  <header class="topbar">
+    <div class="logo">
+      <svg width="24" height="24" viewBox="0 0 34 34" fill="none" aria-hidden="true">
+        <circle cx="12" cy="15" r="3.4" fill="#fff"/><circle cx="22" cy="15" r="3.4" fill="#fff"/>
+        <path d="M9 21c2 3.4 5 5 8 5s6-1.6 8-5" stroke="#fff" stroke-width="3" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <input class="search" placeholder="Search Amigo" aria-label="Search">
+    <div class="spacer"></div>
+    <span class="who">Signed in as <b id="whoName">—</b></span>
+    <button class="logout" id="logout">Log out</button>
+  </header>
+
+  <main class="feed">
+    <div class="composer">
+      <div class="composer-row">
+        <div class="pfp" id="myPfp">🙂</div>
+        <input id="postInput" placeholder="What's on your mind?" maxlength="2000">
+      </div>
+      <button class="btn-post" id="postBtn">Post</button>
+    </div>
+    <div id="posts"></div>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: amigo
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: "npm install --production"
+    startCommand: "node server.js"
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+# To use a custom domain, configure in Render dashboard and set COOKIE_DOMAIN accordingly

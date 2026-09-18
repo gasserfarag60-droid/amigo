@@ -1,0 +1,12 @@
+{
+  "label": "BASELINE",
+  "root": "C:\\amigo\\.upgrade\\original",
+  "homepage": 200,
+  "register": 201,
+  "me": 200,
+  "post": 201,
+  "like": 1,
+  "csrfMissing": 201,
+  "logoutReplay": 200,
+  "csp": false
+}

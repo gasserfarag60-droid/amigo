@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Facebook</title>
+  <link rel="icon" href="/logo_(square).png" type="image/png">
+  <link rel="apple-touch-icon" href="/logo_(square).png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ AUTH SCREEN ============ -->
+<div class="auth" id="authScreen" hidden>
+  <div class="split">
+    <section class="left">
+      <div class="brand-mark" aria-label="Facebook logo">
+        <img src="/logo_(square).png" alt="logo" width="60" height="60">
+      </div>
+      <div class="collage">
+        <div class="collage-inner">
+          <div class="tile phone"><img src="/83zWJdc6PJI.webp" alt="phone image"></div>
+          <div class="tile plant"></div>
+          <div class="tile feed"><span class="feed-face"><img src="/logo_(square).png" alt="logo" width="52" height="52"></span></div>
+          <div class="tag shop">🛍️</div><div class="tag save">🔖</div>
+          <div class="react laugh">😄</div><div class="react heart">❤️</div>
+          <div class="avatar">🧑🏽‍🎤</div>
+        </div>
+      </div>
+      <h1 class="headline">Explore<br>the<br>things<br><span class="accent">you love.</span></h1>
+    </section>
+
+    <section class="right">
+      <!-- LOGIN -->
+      <div class="form-wrap" id="loginView">
+        <h2 class="form-title">Log in to Facebook</h2>
+        <form class="form" id="loginForm" autocomplete="off">
+          <input class="field" id="loginEmail" type="text" placeholder="Email address or mobile number" required>
+          <input class="field" id="loginPass" type="password" placeholder="Password" required>
+          <button class="btn btn-login" type="submit">Log in</button>
+          <span class="forgot" id="forgot">Forgotten password?</span>
+          <button class="btn btn-create" type="button" id="toSignup">Create new account</button>
+        </form>
+        <p class="msg" id="loginMsg"></p>
+        <div class="brand-foot"><span class="dot"></span> Facebook</div>
+      </div>
+
+      <!-- SIGNUP -->
+      <div class="form-wrap" id="signupView" hidden>
+        <h2 class="form-title">Create your account</h2>
+        <p class="form-sub">It's quick and easy.</p>
+        <form class="form" id="signupForm" autocomplete="off">
+          <input class="field" id="suName" type="text" placeholder="Full name" required>
+          <input class="field" id="suEmail" type="email" placeholder="Email address" required>
+          <input class="field" id="suPass" type="password" placeholder="New password (min 6 chars)" required>
+          <button class="btn btn-login" type="submit">Sign up</button>
+        </form>
+        <p class="msg" id="signupMsg"></p>
+        <p class="switch">Already have an account? <a id="toLogin">Log in</a></p>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <div class="langs">
+      <span class="active">English (UK)</span><span>العربية</span><span>Français (France)</span>
+      <span>Italiano</span><span>Deutsch</span><span>Русский</span><span>Español</span><span>More languages</span>
+    </div>
+    <div class="copyright">Facebook © 2026 · Demo project · Not affiliated with any real service</div>
+  </footer>
+</div>
+
+<!-- ============ HOME SCREEN ============ -->
+<div class="app" id="appScreen" hidden>
+  <header class="topbar">
+    <div class="logo">
+      <img src="/logo_(square).png" alt="logo" width="24" height="24">
+    </div>
+    <input class="search" placeholder="Search Facebook" aria-label="Search">
+    <div class="spacer"></div>
+    <span class="who">Signed in as <b id="whoName">—</b></span>
+    <button class="logout" id="logout">Log out</button>
+  </header>
+
+  <main class="feed">
+    <div class="composer">
+      <div class="composer-row">
+        <div class="pfp" id="myPfp"><img src="/logo_(square).png" alt="logo" width="34" height="34"></div>
+        <input id="postInput" placeholder="What's on your mind?" maxlength="2000">
+      </div>
+      <button class="btn-post" id="postBtn">Post</button>
+    </div>
+    <div id="posts"></div>
+  </main>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

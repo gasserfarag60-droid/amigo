@@ -1,0 +1,88 @@
+﻿<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Amigo — a little closer to your people. Share moments and stay connected.">
+  <meta name="color-scheme" content="light dark">
+  <title>Amigo — Your people. Your place.</title>
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#mainContent" data-i18n="skip">Skip to content</a>
+<header class="site-header">
+  <a class="wordmark" href="/" aria-label="Amigo home"><span class="brand-icon" aria-hidden="true">a<span>•</span></span>amigo<span class="brand-period">.</span></a>
+  <div class="header-actions">
+    <button id="languageToggle" class="text-button" type="button" lang="ar" aria-label="Switch to Arabic">العربية</button>
+    <button id="themeToggle" class="icon-button" type="button" aria-label="Switch color theme" title="Switch color theme">◐</button>
+  </div>
+</header>
+
+<div id="bootScreen" class="boot-screen" role="status"><span class="spinner"></span><span data-i18n="loading">Getting things ready…</span></div>
+
+<main id="mainContent" tabindex="-1">
+  <section id="authScreen" class="auth-screen" hidden>
+    <div class="hero">
+      <div class="eyebrow"><span class="tiny-dot"></span><span data-i18n="eyebrow">YOUR PEOPLE. YOUR PLACE.</span></div>
+      <h1><span data-i18n="headline1">Life's better</span><br><span class="accent" data-i18n="headline2">together.</span></h1>
+      <p class="hero-copy" data-i18n="heroCopy">Big moments. Small updates. All the things that bring you closer to your people.</p>
+      <img class="hero-image" src="/assets/login-collage.webp" width="1232" height="1232" alt="A collage of people, everyday moments, plants and shared interests" fetchpriority="high">
+      <div class="hero-caption"><span class="caption-line"></span><span data-i18n="caption">A little more you. A little more connected.</span></div>
+    </div>
+    <div class="auth-panel">
+      <div class="form-wrap" id="loginView">
+        <div class="section-label" data-i18n="welcome">WELCOME BACK</div>
+        <h2 data-i18n="loginTitle">Your people missed you.</h2>
+        <p class="form-sub" data-i18n="loginSub">Log in and pick up where you left off.</p>
+        <form id="loginForm" class="form">
+          <div class="form-group"><label for="loginEmail" data-i18n="email">Email address</label><input id="loginEmail" name="email" class="field" type="email" placeholder="you@example.com" autocomplete="username" maxlength="254" required></div>
+          <div class="form-group"><label for="loginPass" data-i18n="password">Password</label><div class="password-field"><input id="loginPass" name="password" class="field" type="password" placeholder="Your password" autocomplete="current-password" required aria-describedby="loginMsg"><button class="reveal" type="button" data-password="loginPass" aria-controls="loginPass" aria-pressed="false" data-i18n="show">Show</button></div></div>
+          <p class="msg" id="loginMsg" role="alert"></p>
+          <button class="button primary" type="submit"><span data-i18n="login">Log in</span><span aria-hidden="true">↗</span></button>
+        </form>
+        <div class="divider"><span data-i18n="newHere">NEW HERE?</span></div>
+        <button class="button secondary" id="toSignup" type="button" data-i18n="create">Create an account</button>
+        <p class="auth-note"><span aria-hidden="true">◇</span><span data-i18n="authNote">Your password is hashed, never stored as plain text.</span></p>
+      </div>
+      <div class="form-wrap" id="signupView" hidden>
+        <button class="text-button back-button" id="toLogin" type="button"><span aria-hidden="true">←</span><span data-i18n="back">Back to log in</span></button>
+        <div class="section-label" data-i18n="join">FIND YOUR PEOPLE</div>
+        <h2 data-i18n="signupTitle">Make yourself at home.</h2>
+        <p class="form-sub" data-i18n="signupSub">A new connection starts with a hello.</p>
+        <form id="signupForm" class="form">
+          <div class="form-group"><label for="suName" data-i18n="name">Your name</label><input id="suName" name="name" class="field" type="text" autocomplete="name" placeholder="How should we call you?" minlength="2" maxlength="80" required></div>
+          <div class="form-group"><label for="suEmail" data-i18n="email">Email address</label><input id="suEmail" name="email" class="field" type="email" autocomplete="username" placeholder="you@example.com" maxlength="254" required></div>
+          <div class="form-group"><label for="suPass" data-i18n="password">Password</label><div class="password-field"><input id="suPass" name="password" class="field" type="password" autocomplete="new-password" minlength="12" placeholder="Create a strong passphrase" aria-describedby="passwordHint signupMsg" required><button class="reveal" type="button" data-password="suPass" aria-controls="suPass" aria-pressed="false" data-i18n="show">Show</button></div><meter id="passwordMeter" min="0" max="4" value="0" aria-label="Password length guide"></meter><p id="passwordHint" class="field-hint" data-i18n="passwordHint">Use a unique passphrase: 12+ characters, up to 72 UTF-8 bytes.</p></div>
+          <p class="msg" id="signupMsg" role="alert"></p>
+          <button class="button primary" type="submit"><span data-i18n="signup">Create my account</span><span aria-hidden="true">↗</span></button>
+        </form>
+        <p class="auth-note" data-i18n="signupNote">Only use a password that's unique to Amigo.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="appScreen" class="app-screen" hidden>
+    <aside class="sidebar">
+      <div class="profile-card"><div class="avatar large" id="myPfp">A</div><h2 id="whoName"></h2><p id="whoEmail" class="muted"></p><span class="profile-badge" data-i18n="yourSpace">Your little corner of Amigo</span></div>
+      <nav class="feed-nav" aria-label="Feed filters"><button id="allPosts" class="nav-item active" type="button" aria-pressed="true"><span aria-hidden="true">⌂</span><span data-i18n="home">Home feed</span></button><button id="myPosts" class="nav-item" type="button" aria-pressed="false"><span aria-hidden="true">✎</span><span data-i18n="myPosts">My posts</span></button></nav>
+      <button class="text-button logout" id="logout" type="button"><span aria-hidden="true">↪</span><span data-i18n="logout">Log out</span></button>
+    </aside>
+    <section class="feed-column" aria-labelledby="feedTitle">
+      <div class="feed-heading"><div><p class="section-label" data-i18n="yourDaily">YOUR DAILY DOSE OF CONNECTION</p><h1 id="feedTitle" data-i18n="feedTitle">The good company feed.</h1></div><button id="refreshPosts" class="icon-button" type="button" aria-label="Refresh posts" title="Refresh posts">↻</button></div>
+      <form class="composer card" id="postForm"><label for="postInput" data-i18n="shareMoment">Got a moment to share?</label><textarea id="postInput" name="body" rows="3" maxlength="2000" placeholder="What's on your mind?" required></textarea><div class="composer-footer"><span class="muted counter" id="postCount">0 / 2000</span><button class="button primary small" id="postBtn" type="submit" disabled><span data-i18n="post">Share a moment</span><span aria-hidden="true">↗</span></button></div></form>
+      <div class="search-wrap"><span aria-hidden="true">⌕</span><input id="searchPosts" type="search" placeholder="Find a moment or a friend…" aria-label="Search posts and people" maxlength="200"></div>
+      <p id="feedMsg" class="msg" role="status"></p>
+      <div id="posts" class="posts" aria-live="polite" aria-busy="false"></div>
+      <div id="emptyState" class="empty-state card" hidden><span class="empty-icon" aria-hidden="true">✦</span><h2 data-i18n="emptyTitle">A fresh start.</h2><p data-i18n="emptyCopy">No moments here yet. Share something, or try another search.</p></div>
+    </section>
+    <aside class="discover-column"><div class="connection-card"><span class="section-label" data-i18n="smallThings">IT'S THE SMALL THINGS</span><h2 data-i18n="discoverTitle">A hello can go a long way.</h2><p data-i18n="discoverCopy">Share a thought. Celebrate a win. Let your people know you're thinking of them.</p><span class="sunburst" aria-hidden="true">✳</span></div><div class="tip-card"><h3 data-i18n="tipTitle">Make this space yours</h3><p data-i18n="tipCopy">Find posts with search, like a moment, or copy a link to share it with another Amigo member.</p></div></aside>
+  </section>
+</main>
+<footer class="site-footer"><span>© <span id="year">2026</span> Amigo</span><span data-i18n="footer">Real moments. Meaningful connections.</span><span class="footer-dot"><span class="tiny-dot"></span><span data-i18n="footerEnd">A space to be yourself</span></span></footer>
+<div id="toast" class="toast" role="status" hidden></div>
+<noscript>This site needs JavaScript enabled to log in and display your feed.</noscript>
+<template id="postTemplate"><article class="post card"><div class="post-head"><div class="avatar"></div><div class="post-person"><span class="post-name"></span><time class="post-time"></time></div><button class="delete-post text-button" type="button" hidden>Delete</button></div><p class="post-body"></p><div class="post-actions"><button class="like-button action-button" type="button" aria-pressed="false"><span class="heart-icon" aria-hidden="true">♡</span><span class="like-label">Like</span><span class="like-count">0</span></button><button class="share-button action-button" type="button"><span aria-hidden="true">↗</span><span class="share-label">Copy link</span></button></div></article></template>
+</body>
+</html>

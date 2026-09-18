@@ -1,0 +1,100 @@
+{
+  "original": [
+    {
+      "sha256": "09868BA300012FFE2528F0C345561AE9B51A9D14529F9EBD11852BA6A5D84782",
+      "path": "server.js"
+    },
+    {
+      "sha256": "F96069CE27879D23C8684A35357209B10CB037AA7F17857FB54BBD846BBBED02",
+      "path": "package.json"
+    },
+    {
+      "sha256": "A3CF0013A492F1201A850D9CF25E42B5125EBB16ACA1DAB52EF89E502AB45228",
+      "path": "package-lock.json"
+    },
+    {
+      "sha256": "A955C470A139D8BBC7FB05DB38A234A5628C2D6F07F05EA830D3FB5C5339F798",
+      "path": ".env.example"
+    },
+    {
+      "sha256": "92757ACDBE657A6C1EA7833B4F39DA15E4830646F6C0A865B39DF08AC8DBE5BF",
+      "path": ".gitignore"
+    },
+    {
+      "sha256": "FB28E75A38DC2DC00C694DD30863589407C478277A8AFE2C541DC6F60292DF92",
+      "path": "README.md"
+    },
+    {
+      "sha256": "15A766A137F2335CDB94B3966482572DF83588DA49DAED94F8C9903E66A33A2B",
+      "path": "public/index.html"
+    },
+    {
+      "sha256": "7FE74A77A4AA8478B8AC492910D89A3BA06360EA64FFD7702B2DDECB81E79EDD",
+      "path": "public/app.js"
+    },
+    {
+      "sha256": "113657089314FB5E2DC712114884591AB9A9B90DEF6FEA68F591002C0BD17D77",
+      "path": "public/styles.css"
+    }
+  ],
+  "modified": [
+    {
+      "path": "server.js",
+      "sha256": "DD1D3B239467A6BA1B1C63048769BD674AE175AEB21B9B486022545AA38449AF"
+    },
+    {
+      "path": "package.json",
+      "sha256": "A0E5A9FEE63988C78D9C52142D9BB607E6F5158A0E76D23FF9D5A4A6232E1413"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "92B389BB99D8F8E26D041E28A4E8572B367ACF1D874EFE1593BC579628E209B0"
+    },
+    {
+      "path": ".env.example",
+      "sha256": "E13D3A0F766AC4D60DF05B3EB658144AEA86CF4AC66806B567823D93ABE4A702"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "CB946240EE81C7ABCD501FEAB21BA3CC9FACB944028230BB7D7B2AD6CF7E0105"
+    },
+    {
+      "path": "README.md",
+      "sha256": "6275680F222CA0263E5F7FE0BFB17CC2520C03032C7D8D14CE11226B1ABC9863"
+    },
+    {
+      "path": "public/index.html",
+      "sha256": "954F0E235DE437E1B6D9DB05218543BA25C5193AA42C7A506DE72AFDE82B24A7"
+    },
+    {
+      "path": "public/app.js",
+      "sha256": "FE6731BC1086EE8D96F40F94DC9DC0BFC28347D65360BB6BCB41F070CE12A724"
+    },
+    {
+      "path": "public/styles.css",
+      "sha256": "109C993762625DD6B6FB4C43959387D1A88D0E63D8371BB0BB3A512B2D2377B1"
+    },
+    {
+      "path": "public/assets/login-collage.webp",
+      "sha256": "76B242E16492F563C762E8DB9F30C462AE543DFA1292B137AAB4D1CEA1739ADF"
+    },
+    {
+      "path": "public/assets/favicon.svg",
+      "sha256": "66FEBB0DDD7953FBD72849692A72BBC8844548326D3AEFFF2E10541BAE5715FC"
+    },
+    {
+      "path": "tests/security.cjs",
+      "sha256": "7B063393F5A13E9DC3C86BFC62AA4CBEA44A090D230F04CF0789DA3872B51D25"
+    },
+    {
+      "path": "scripts/list-users.cjs",
+      "sha256": "0A433961661B91642AEE27C8984491A21E734D4B62C1FEEEB2556226B406E459"
+    }
+  ],
+  "added": [
+    "public/assets/login-collage.webp",
+    "public/assets/favicon.svg",
+    "tests/security.cjs",
+    "scripts/list-users.cjs"
+  ]
+}

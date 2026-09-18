@@ -1,0 +1,38 @@
+﻿[
+    {
+        "sha256":  "09868BA300012FFE2528F0C345561AE9B51A9D14529F9EBD11852BA6A5D84782",
+        "path":  "server.js"
+    },
+    {
+        "sha256":  "F96069CE27879D23C8684A35357209B10CB037AA7F17857FB54BBD846BBBED02",
+        "path":  "package.json"
+    },
+    {
+        "sha256":  "A3CF0013A492F1201A850D9CF25E42B5125EBB16ACA1DAB52EF89E502AB45228",
+        "path":  "package-lock.json"
+    },
+    {
+        "sha256":  "A955C470A139D8BBC7FB05DB38A234A5628C2D6F07F05EA830D3FB5C5339F798",
+        "path":  ".env.example"
+    },
+    {
+        "sha256":  "92757ACDBE657A6C1EA7833B4F39DA15E4830646F6C0A865B39DF08AC8DBE5BF",
+        "path":  ".gitignore"
+    },
+    {
+        "sha256":  "FB28E75A38DC2DC00C694DD30863589407C478277A8AFE2C541DC6F60292DF92",
+        "path":  "README.md"
+    },
+    {
+        "sha256":  "15A766A137F2335CDB94B3966482572DF83588DA49DAED94F8C9903E66A33A2B",
+        "path":  "public/index.html"
+    },
+    {
+        "sha256":  "7FE74A77A4AA8478B8AC492910D89A3BA06360EA64FFD7702B2DDECB81E79EDD",
+        "path":  "public/app.js"
+    },
+    {
+        "sha256":  "113657089314FB5E2DC712114884591AB9A9B90DEF6FEA68F591002C0BD17D77",
+        "path":  "public/styles.css"
+    }
+]

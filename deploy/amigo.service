@@ -1,0 +1,17 @@
+[Unit]
+Description=Amigo Node App
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/home/ubuntu/amigo    # <-- replace with your app path on server
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=COOKIE_DOMAIN=facebook1.com   # updated to your chosen domain
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,78 @@
+﻿"use strict";
+const assert=require("node:assert/strict");
+const fs=require("node:fs"),path=require("node:path"),os=require("node:os"),net=require("node:net");
+const {spawn}=require("node:child_process"),{once}=require("node:events");
+const {chromium}=require("./tooling/node_modules/playwright");
+const AxeBuilder=require("./tooling/node_modules/@axe-core/playwright").default;
+const root=path.resolve(__dirname,"modified");
+async function main(){
+  const socket=net.createServer().listen(0,"127.0.0.1");await once(socket,"listening");
+  const port=socket.address().port;await new Promise(r=>socket.close(r));
+  const base="http://127.0.0.1:"+port,dir=fs.mkdtempSync(path.join(os.tmpdir(),"amigo-browser-"));
+  const child=spawn(process.execPath,[path.join(root,"server.js")],{cwd:root,env:{...process.env,NODE_ENV:"test",HOST:"127.0.0.1",PORT:String(port),APP_ORIGIN:base,DATA_DIR:dir},stdio:["ignore","pipe","pipe"]});
+  let serverOutput="";child.stdout.on("data",b=>serverOutput+=b);child.stderr.on("data",b=>serverOutput+=b);
+  let browser;
+  try{
+    for(let i=0;i<100;i++){try{await fetch(base);break}catch{await new Promise(r=>setTimeout(r,100))}}
+    browser=await chromium.launch({executablePath:"C:/Program Files/Google/Chrome/Application/chrome.exe",headless:true});
+    const context=await browser.newContext({viewport:{width:1440,height:1050},colorScheme:"light",permissions:["clipboard-read","clipboard-write"]});
+    const page=await context.newPage();const errors=[];const requests=[];
+    page.on("pageerror",e=>errors.push(e.message));
+    page.on("request",r=>requests.push(r.url()));
+    await page.goto(base);await page.locator("#authScreen").waitFor({state:"visible"});
+    await page.locator(".hero-image").evaluate(img=>img.decode());
+    const desktopA11y=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa"]).analyze();
+    assert.deepEqual(desktopA11y.violations.map(v=>({id:v.id,impact:v.impact,nodes:v.nodes.map(n=>n.target)})),[]);
+    assert.ok(await page.locator(".hero-image").evaluate(img=>img.naturalWidth>0));
+    await page.screenshot({path:path.join(__dirname,"reports/login-desktop.png"),fullPage:true});
+    await page.locator("#themeToggle").click();assert.equal(await page.locator("html").getAttribute("data-theme"),"dark");
+    await page.screenshot({path:path.join(__dirname,"reports/login-dark.png"),fullPage:true});
+    await page.locator("#themeToggle").click();
+    await page.locator("#toSignup").click();
+    await page.locator("#suName").fill("<img src=x onerror=alert(1)>");
+    await page.locator("#suEmail").fill("browser@example.test");
+    await page.locator("#suPass").fill("Browser Fixture Passphrase 42!");
+    await page.locator('[data-password="suPass"]').click();assert.equal(await page.locator("#suPass").getAttribute("type"),"text");
+    await page.locator('[data-password="suPass"]').click();assert.equal(await page.locator("#suPass").getAttribute("type"),"password");
+    await page.locator('#signupForm button[type="submit"]').click();
+    await page.locator("#appScreen").waitFor({state:"visible"});
+    assert.equal(await page.locator("#suPass").inputValue(),"");
+    const payload="<img src=x onerror=alert('xss')> This is a text-only post.";
+    await page.locator("#postInput").fill(payload);await page.locator("#postBtn").click();
+    await page.locator(".post").first().waitFor();
+    assert.equal(await page.locator(".post-body").first().textContent(),payload);
+    assert.equal(await page.locator(".post img").count(),0);
+    await page.locator(".like-button").first().click();
+    await page.waitForFunction(()=>document.querySelector(".like-button").getAttribute("aria-pressed")==="true");
+    assert.equal(await page.locator(".like-count").first().textContent(),"1");
+    await page.locator(".share-button").first().click();
+    assert.match(await page.evaluate(()=>navigator.clipboard.readText()),/#post-/);
+    await page.locator("#searchPosts").fill("no-match-3928");await page.locator("#emptyState").waitFor({state:"visible"});
+    await page.locator("#searchPosts").fill("");await page.locator(".post").first().waitFor();
+    await page.locator("#myPosts").click();assert.equal(await page.locator(".post").count(),1);
+    await page.locator("#postInput").fill("Small wins deserve a little celebration. What's yours today?");
+    await page.locator("#postBtn").click();await page.waitForFunction(()=>document.querySelectorAll(".post").length===2);
+    await page.screenshot({path:path.join(__dirname,"reports/feed-desktop.png"),fullPage:true});
+    page.once("dialog",d=>d.accept());await page.locator(".delete-post").first().click();
+    await page.waitForFunction(()=>document.querySelectorAll(".post").length===1);
+    await page.locator("#logout").click();await page.locator("#authScreen").waitFor({state:"visible"});
+    await page.locator("#loginEmail").fill("browser@example.test");await page.locator("#loginPass").fill("Browser Fixture Passphrase 42!");
+    await page.locator('#loginForm button[type="submit"]').click();await page.locator("#appScreen").waitFor({state:"visible"});
+    await page.reload();await page.locator("#appScreen").waitFor({state:"visible"});
+    await page.locator("#logout").click();await page.locator("#authScreen").waitFor({state:"visible"});
+    await page.locator("#languageToggle").click();assert.equal(await page.locator("html").getAttribute("dir"),"rtl");
+    await page.setViewportSize({width:390,height:844});
+    const mobileA11y=await new AxeBuilder({page}).withTags(["wcag2a","wcag2aa","wcag21aa"]).analyze();
+    assert.deepEqual(mobileA11y.violations.map(v=>({id:v.id,impact:v.impact})),[]);
+    await page.screenshot({path:path.join(__dirname,"reports/login-mobile-ar.png"),fullPage:true});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+    await page.locator("#languageToggle").click();await page.screenshot({path:path.join(__dirname,"reports/login-mobile.png"),fullPage:true});
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>window.innerWidth),false);
+    assert.deepEqual(errors,[]);
+    assert.equal(requests.some(url=>!url.startsWith(base)),false);
+    console.log("BROWSER: PASS desktop/mobile, Arabic RTL, dark mode, image, signup, show-password, login, persistent session, post, XSS-as-text, like, search, filter, share, delete, logout; JS errors=0; external requests=0; axe WCAG A/AA violations=0 (login desktop + Arabic mobile)");
+    fs.writeFileSync(path.join(__dirname,"reports/browser.json"),JSON.stringify({status:"PASS",jsErrors:errors,externalRequests:0,axeViolations:desktopA11y.violations.concat(mobileA11y.violations),screenshots:["login-desktop.png","login-dark.png","feed-desktop.png","login-mobile-ar.png","login-mobile.png"]},null,2));
+  }catch(e){console.error(serverOutput);throw e}
+  finally{if(browser)await browser.close();const done=once(child,"exit");child.kill();await done}
+}
+main().catch(e=>{console.error(e);process.exitCode=1});

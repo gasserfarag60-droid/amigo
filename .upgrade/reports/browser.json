@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "jsErrors": [],
+  "externalRequests": 0,
+  "axeViolations": [],
+  "screenshots": [
+    "login-desktop.png",
+    "login-dark.png",
+    "feed-desktop.png",
+    "login-mobile-ar.png",
+    "login-mobile.png"
+  ]
+}

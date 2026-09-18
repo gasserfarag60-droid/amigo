@@ -1,0 +1,24 @@
+{
+  "name": "amigo",
+  "version": "1.1.0",
+  "description": "Amigo social app with revocable sessions, CSRF protection and private authentication audit logs",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env server.js",
+    "dev": "node --env-file-if-exists=.env --watch server.js",
+    "test": "node tests/security.cjs",
+    "users:list": "node --env-file-if-exists=.env scripts/list-users.cjs"
+  },
+  "engines": {
+    "node": ">=22.9"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "better-sqlite3": "^13.0.3",
+    "cookie-parser": "^1.4.6",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.7.0",
+    "jsonwebtoken": "^9.0.2"
+  }
+}

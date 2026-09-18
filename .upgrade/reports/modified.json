@@ -1,0 +1,12 @@
+{
+  "label": "MODIFIED",
+  "root": "C:\\amigo\\.upgrade\\modified",
+  "homepage": 200,
+  "register": 201,
+  "me": 200,
+  "post": 201,
+  "like": 1,
+  "csrfMissing": 403,
+  "logoutReplay": 401,
+  "csp": true
+}
