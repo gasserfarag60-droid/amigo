@@ -33,6 +33,14 @@ Deploying Amigo (basic guide)
   sudo certbot certonly --webroot -w /var/www/certbot -d example.com -d www.example.com
   # then update nginx config to use the certs and reload nginx
 
+9) DNS and Custom Domain (`facebook1.com`)
+- If you use Render: add `facebook1.com` as a custom domain in the Render service settings. Render will provide DNS target records (CNAME or A records) — follow Render's instructions to add those to your domain registrar.
+- If you use your own VPS with `deploy/nginx_amigo.conf`: create an `A` record at your registrar pointing `facebook1.com` and `www.facebook1.com` to your server public IP.
+- After DNS propagates, request SSL via `certbot` using `-d facebook1.com -d www.facebook1.com` and update nginx with the certificate paths.
+
+Notes on Render custom domain:
+- Render supports adding custom domains in the Dashboard for a service. After you add the domain, Render shows DNS records to add at your registrar (usually a CNAME or A records). Once DNS is valid, Render will provision TLS automatically.
+
 8) DNS:
 - Point your domain's A record to the server public IP.
 

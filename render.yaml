@@ -11,4 +11,8 @@ services:
         value: production
       - key: PORT
         value: "3000"
+      - key: COOKIE_DOMAIN
+        value: facebook1.com
+    customDomains:
+      - facebook1.com
 # To use a custom domain, configure in Render dashboard and set COOKIE_DOMAIN accordingly
