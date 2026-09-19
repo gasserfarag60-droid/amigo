@@ -313,8 +313,8 @@ app.get(/^(?!\/api\/).*/, (req, res) => {
 });
 
 if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Facebook running at http://localhost:${PORT}`);
+  app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Amigo running on port ${PORT}`);
   });
 }
 
