@@ -23,6 +23,7 @@ const PORT = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || "dev-only-change-me-in-production";
 const TOKEN_COOKIE = "amigo_token";
 const IS_PROD = process.env.NODE_ENV === "production";
+const IS_VERCEL = !!process.env.VERCEL;
 
 if (IS_PROD && JWT_SECRET === "dev-only-change-me-in-production") {
   console.error("FATAL: set a strong JWT_SECRET env var before running in production.");
@@ -32,33 +33,37 @@ if (IS_PROD && JWT_SECRET === "dev-only-change-me-in-production") {
 // ---------- database ----------
 const DATA_DIR = path.join(__dirname, "data");
 fs.mkdirSync(DATA_DIR, { recursive: true });
-const db = new Database(path.join(DATA_DIR, "amigo.db"));
-db.pragma("journal_mode = WAL");
-db.exec(`
-  CREATE TABLE IF NOT EXISTS users (
-    id            TEXT PRIMARY KEY,
-    name          TEXT NOT NULL,
-    email         TEXT NOT NULL UNIQUE,
-    password_hash TEXT NOT NULL,
-    created_at    INTEGER NOT NULL
-  );
-  CREATE TABLE IF NOT EXISTS posts (
-    id          TEXT PRIMARY KEY,
-    author_id   TEXT NOT NULL,
-    author_name TEXT NOT NULL,
-    body        TEXT NOT NULL,
-    created_at  INTEGER NOT NULL,
-    FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
-  );
-  CREATE TABLE IF NOT EXISTS likes (
-    post_id TEXT NOT NULL,
-    user_id TEXT NOT NULL,
-    PRIMARY KEY (post_id, user_id),
-    FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
-  );
-`);
+let db = null;
+let q = null;
 
-const q = {
+try {
+  db = new Database(path.join(DATA_DIR, "amigo.db"));
+  db.pragma("journal_mode = WAL");
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS users (
+      id            TEXT PRIMARY KEY,
+      name          TEXT NOT NULL,
+      email         TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      created_at    INTEGER NOT NULL
+    );
+    CREATE TABLE IF NOT EXISTS posts (
+      id          TEXT PRIMARY KEY,
+      author_id   TEXT NOT NULL,
+      author_name TEXT NOT NULL,
+      body        TEXT NOT NULL,
+      created_at  INTEGER NOT NULL,
+      FOREIGN KEY (author_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE TABLE IF NOT EXISTS likes (
+      post_id TEXT NOT NULL,
+      user_id TEXT NOT NULL,
+      PRIMARY KEY (post_id, user_id),
+      FOREIGN KEY (post_id) REFERENCES posts(id) ON DELETE CASCADE
+    );
+  `);
+
+  q = {
   userByEmail: db.prepare("SELECT * FROM users WHERE email = ?"),
   insertUser: db.prepare("INSERT INTO users (id, name, email, password_hash, created_at) VALUES (?, ?, ?, ?, ?)"),
   insertPost: db.prepare("INSERT INTO posts (id, author_id, author_name, body, created_at) VALUES (?, ?, ?, ?, ?)"),
@@ -72,8 +77,26 @@ const q = {
   likeExists: db.prepare("SELECT 1 FROM likes WHERE post_id = ? AND user_id = ?"),
   addLike: db.prepare("INSERT OR IGNORE INTO likes (post_id, user_id) VALUES (?, ?)"),
   removeLike: db.prepare("DELETE FROM likes WHERE post_id = ? AND user_id = ?"),
-  likeCount: db.prepare("SELECT COUNT(*) AS n FROM likes WHERE post_id = ?"),
-};
+    likeCount: db.prepare("SELECT COUNT(*) AS n FROM likes WHERE post_id = ?"),
+  };
+} catch (error) {
+  console.error("SQLite initialization failed in this runtime:", error && error.message ? error.message : error);
+  if (IS_VERCEL) {
+    console.warn("Vercel serverless functions do not provide a reliable persistent writable filesystem for better-sqlite3. The app will remain available for static pages, but database-backed API routes will return 503 until a managed database is used.");
+  }
+}
+
+function requireDb(res) {
+  if (!db || !q) {
+    if (res) {
+      res.status(503).json({
+        error: "Database is unavailable in this hosting environment. SQLite is not reliable on Vercel serverless functions because it requires a native binary and local writable disk.",
+      });
+    }
+    return false;
+  }
+  return true;
+}
 
 // ---------- security event audit log (events only, NEVER passwords) ----------
 const AUDIT_PATH = path.join(DATA_DIR, "audit.log");
@@ -133,6 +156,10 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+app.get("/favicon.ico", (req, res) => {
+  res.redirect("/logo_(square).png");
+});
+
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -168,6 +195,7 @@ function auth(req, res, next) {
 
 // ---------- auth routes ----------
 app.post("/api/register", authLimiter, async (req, res) => {
+  if (!requireDb(res)) return;
   const name = String(req.body.name || "").trim();
   const email = String(req.body.email || "").trim().toLowerCase();
   const password = String(req.body.password || "");
@@ -201,6 +229,7 @@ app.post("/api/register", authLimiter, async (req, res) => {
 });
 
 app.post("/api/login", authLimiter, async (req, res) => {
+  if (!requireDb(res)) return;
   const email = String(req.body.email || "").trim().toLowerCase();
   const password = String(req.body.password || "");
   const ip = req.ip;
@@ -234,6 +263,7 @@ app.post("/api/logout", (req, res) => {
 });
 
 app.get("/api/me", auth, (req, res) => {
+  if (!requireDb(res)) return;
   res.json({ user: { id: req.user.id, name: req.user.name, email: req.user.email } });
 });
 
@@ -250,10 +280,12 @@ function shapePost(row) {
 }
 
 app.get("/api/posts", auth, (req, res) => {
+  if (!requireDb(res)) return;
   res.json({ posts: q.listPosts.all(req.user.id).map(shapePost) });
 });
 
 app.post("/api/posts", auth, (req, res) => {
+  if (!requireDb(res)) return;
   const body = String(req.body.body || "").trim();
   if (!body) return res.status(400).json({ error: "Post cannot be empty." });
   if (body.length > 2000) return res.status(400).json({ error: "Post is too long (max 2000 characters)." });
@@ -266,6 +298,7 @@ app.post("/api/posts", auth, (req, res) => {
 });
 
 app.post("/api/posts/:id/like", auth, (req, res) => {
+  if (!requireDb(res)) return;
   const postId = req.params.id;
   if (!q.postById.get(postId)) return res.status(404).json({ error: "Post not found." });
   const liked = q.likeExists.get(postId, req.user.id);
@@ -279,6 +312,10 @@ app.get(/^(?!\/api\/).*/, (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-app.listen(PORT, () => {
-  console.log(`Facebook running at http://localhost:${PORT}`);
-});
+if (require.main === module) {
+  app.listen(PORT, () => {
+    console.log(`Facebook running at http://localhost:${PORT}`);
+  });
+}
+
+module.exports = app;
