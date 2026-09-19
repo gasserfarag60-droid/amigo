@@ -52,3 +52,42 @@ If you want, I can:
 - Create and fill a `deploy` script for automated deploys
 - Generate a sample `nginx` config with TLS blocks
 - Help you set up DNS and issue a Let's Encrypt cert if you provide the server details
+
+Persistent backend and storing `passwords.txt` from the published frontend
+---------------------------------------------------------------
+If you need `data/passwords.txt` to be written when users interact with the *published* frontend (Netlify), you must run the backend on a publicly reachable server with persistent disk (a VPS). Netlify is static-only and cannot write to files on your server.
+
+Recommended flow:
+1. Provision a VPS (Ubuntu 22.04+) and set its public IP to `YOUR_SERVER_IP`.
+2. Point an API subdomain to the VPS, e.g. `api.facebook1.com` → add an `A` record to `YOUR_SERVER_IP`.
+3. Copy the project to the server and install production dependencies:
+
+  scp -r C:\amigo ubuntu@YOUR_SERVER_IP:/home/ubuntu/amigo
+  ssh ubuntu@YOUR_SERVER_IP
+  cd /home/ubuntu/amigo
+  npm ci --production
+
+4. Ensure `data/` exists and is writable by the app user:
+
+  mkdir -p data
+  chown -R $(whoami):$(whoami) data
+
+5. Set environment variables (example using systemd env file or export in shell):
+
+  export JWT_SECRET=REPLACE_WITH_YOUR_SECRET
+  export COOKIE_DOMAIN=facebook1.com
+
+6. Create a `systemd` service so the app runs persistently (example `deploy/amigo.service` provided in this repo). Then start and enable it:
+
+  sudo cp deploy/amigo.service /etc/systemd/system/amigo.service
+  sudo systemctl daemon-reload
+  sudo systemctl enable --now amigo.service
+
+7. Verify the server is reachable at `http://api.facebook1.com:3000` (or via nginx reverse proxy on port 80/443).
+
+8. Update the published frontend on Netlify to proxy API calls to your backend by adding a `_redirects` file (already present in this repo). The rule maps `/api/*` requests from the Netlify-hosted site to `https://api.facebook1.com/api/:splat` so the published site will POST/GET to your VPS and your `data/passwords.txt` will be updated.
+
+Notes:
+- Do NOT store plaintext passwords. The server logs only bcrypt hashes in `data/passwords.txt` as implemented.
+- If you prefer Managed hosting (Render/Fly), ensure the chosen host supports a persistent writable directory for `data/` (VPS is simplest for file persistence).
+

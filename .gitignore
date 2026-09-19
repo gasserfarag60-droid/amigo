@@ -5,3 +5,6 @@ data/
 npm-debug.log*
 coverage/
 .vscode/
+
+# Local Netlify folder
+.netlify

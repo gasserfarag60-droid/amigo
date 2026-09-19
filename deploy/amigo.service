@@ -1,4 +1,26 @@
 [Unit]
+Description=Amigo Node.js app
+After=network.target
+
+[Service]
+Environment=NODE_ENV=production
+Environment=PORT=3000
+# Set these in a secure way on the server; placeholders here for reference
+Environment=JWT_SECRET=REPLACE_WITH_YOUR_SECRET
+Environment=COOKIE_DOMAIN=facebook1.com
+Type=simple
+User=www-data
+WorkingDirectory=/home/ubuntu/amigo
+ExecStart=/usr/bin/node server.js
+Restart=on-failure
+RestartSec=5
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=amigo
+
+[Install]
+WantedBy=multi-user.target
+[Unit]
 Description=Amigo Node App
 After=network.target
 
